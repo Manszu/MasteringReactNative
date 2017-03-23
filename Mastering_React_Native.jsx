@@ -50,6 +50,7 @@ class Title extends Component {
   } 
 } 
 
+//The entire contents of the file that defines and exports the Title component, Title.jsx, might look like this:
 
 import React, { Component } from 'react'; 
 export default class Title extends Component { 
@@ -62,5 +63,41 @@ export default class Title extends Component {
     ); 
   } 
 } 
+
+
+//Can build one component based on other components in example title:
+import React, { Component } from 'react'; 
+ 
+class NewsItem extends Component { 
+ 
+  render() { 
+    return ( 
+      <div className="news-item"> 
+        <Image /> 
+        <Title /> 
+        <Byline /> 
+        <Description /> 
+      </div> 
+    ); 
+  } 
+ 
+} 
+// For example we want to build Warning title component based on Title component with red border
+
+
+import React, { Component } from 'react'; 
+ 
+class WarningTitle extends Component { 
+ 
+  render() { 
+    return ( 
+      <div style={{ border: '1px solid red' }}> 
+        <Title /> 
+      </div> 
+    ); 
+  } 
+ 
+} 
+
 
 
