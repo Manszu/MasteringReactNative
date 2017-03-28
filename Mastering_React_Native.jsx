@@ -100,4 +100,212 @@ class WarningTitle extends Component {
 } 
 
 
+//React provides a mechanism for making components dynamic by using properties, or props
+
+
+//Base definition of component Title
+import React, { Component } from 'react'; 
+ 
+export default class Title extends Component { 
+ 
+  render() { 
+    return ( 
+      <h1> 
+        Hello World! 
+      </h1> 
+    ); 
+  } 
+ 
+} 
+
+//Making this component dynamic by using titleText input property:
+import React, { Component } from 'react'; 
+ 
+export default class Title extends Component { 
+ 
+  render() { 
+    return ( 
+      <h1> 
+        {this.props.titleText} 
+      </h1> 
+    ); 
+  } 
+ 
+} 
+
+
+//Curly brackets in JSX denotes JavaScript code 
+<h1> 
+  {this.props.titleText} 
+</h1> 
+
+
+//Defining PropTypes in a component is how we formally tell other developers what properties a component accepts and what 
+//value types those properties should be. PropTypes are the same across instances of a component and are thus statically
+//attached to the class:
+import React, { Component, PropTypes } from 'react'; 
+ 
+export default class Title extends Component { 
+ 
+  render() { 
+    return ( 
+      <h1> 
+        {this.props.titleText} 
+      </h1> 
+    ); 
+  } 
+ 
+} 
+ 
+Title.propTypes = { 
+  titleText: PropTypes.string 
+}; 
+
+//To use PropTypes we'll need to add it to the React import:
+import React, { Component, PropTypes } from 'react'; 
+
+//PropTypes module comes with functions for validation different value types,
+//such as string, number, and func.
+
+//Here we are communicationg that this component takes one optional property called titleText, and that property should be of type string:
+Title.propTypes = { 
+  titleText: PropTypes.string 
+}; 
+
+//We could also make this a required property:
+Title.propTypes: { 
+  titleText: PropTypes.string.isRequired 
+} 
+
+//In addition to having string type props, we can also have other simple types, such as booleans and numbers:
+Title.propTypes = { 
+  titleText: PropTypes.string.isRequired, 
+  highlighted: PropTypes.bool, 
+  fontSize: PropTypes.number 
+}; 
+
+//Props can not only be used to define the text content, but can also be used
+// to define attributes of an element, for instance, inline style:
+import React, { Component, PropTypes } from 'react'; 
+ 
+export default class Title extends Component { 
+ 
+  render() { 
+    return ( 
+      <h1 
+        style={{ 
+          backgroundColor: this.props.highlighted ? 'yellow' : 'white', fontSize: `${this.props.fontSize}px` 
+        }} 
+      > 
+      {this.props.titleText} 
+      </h1> 
+ 
+    ); 
+  } 
+ 
+} 
+ 
+Title.propTypes = { 
+  titleText: PropTypes.string.isRequired, 
+  highlighted: PropTypes.bool, fontSize: PropTypes.number 
+}; 
+//Note that CSS properties that have a dash in them when written in traditional CSS use camel case
+//in React inline style. This is because keys in JS objects cannot contain dashes.
+backgroundColor: this.props.highlighted ? 'yellow' : 'white', fontSize: `${this.props.fontSize}px` 
+
+//React PropType specifications can also be used to validate more complex properties.
+//For instance, we could gave a property that is either a string or a number using the
+//oneOfType function, which is as follows:
+fontSize: PropTypes.oneOfType([ 
+  PropTypes.string, 
+  PropTypes.number 
+]) 
+
+//We can also specify a set of specific values that a property is allowed to take by using
+//the oneOf method:
+size: PropTypes.oneOf([ 
+  'small', 
+  'medium', 
+  'large' 
+]) 
+
+//We can of course specify more complex data types, such as arrays and objects, but we can also
+//be more specific and describe the types of values in an array property or the shape that
+//an object property takes:
+propTypes: { 
+  //Array that can contain anything 
+  simpleArray: PropTypes.array, 
+ 
+  //Object that can contain anything 
+  simpleObject: PropTypes.object, 
+ 
+  //Array that contains only Number values 
+  arrayOfNumbers: PropTypes.arrayOf(PropTypes.number), 
+ 
+  //Object that takes a specific "shape" 
+  complexObject: PropTypes.shape({ 
+    id: PropTypes.number, 
+    name: PropTypes.string 
+  }) 
+} 
+
+//Alternatively, PropTypes can be added to a React component as a static property using
+//the static keyword - but this is not recomended:
+import React, { Component, PropTypes } from 'react'; 
+ 
+export default class Title extends Component { 
+ 
+  static propTypes = { 
+    titleText: PropTypes.string.isRequired, 
+    highlighted: PropTypes.bool, 
+    fontSize: PropTypes.number
+} 
+ 
+  render() { 
+    return ( 
+      <h1 
+        style={{ 
+          backgroundColor: this.props.highlighted ? 'yellow' : 'white', fontSize: `${this.props.fontSize}px` 
+        }} 
+      > 
+        {this.props.titleText} 
+      </h1> 
+ 
+    ); 
+  } 
+ 
+} 
+
+
+//Passing Props- in case of our Title Component, the NewsItem component can pass properties into the 
+//contained Title component.
+import React, { Component } from 'react'; 
+import Title from './Title'; 
+ 
+export default class NewsItem extends Component { 
+ 
+  render() { 
+    return ( 
+      <div className="news-item"> 
+        <Image /> 
+        <Title 
+          titleText="Hello World!" 
+          highlighted={true} 
+          fontSize={18} 
+        /> 
+        <Byline /> 
+        <Description /> 
+      </div> 
+    ); 
+  } 
+ 
+} 
+
+//String are the only value types that can be passed in as a prop directly:
+titleText="Hello World!" 
+
+
+
+
+
 
