@@ -304,8 +304,284 @@ export default class NewsItem extends Component {
 //String are the only value types that can be passed in as a prop directly:
 titleText="Hello World!" 
 
+//For Boolean props, we can shorten their input to where the property name's presence is
+//interpreted as true and its absence is interpreted as false, much like in HTML:
+<div className="news-item"> 
+  <Image /> 
+  <Title 
+    titleText="Hello World!" 
+    highlighted 
+    fontSize={18} 
+  /> 
+  <Byline /> 
+  <Description /> 
+</div> 
+//Default props method. defaukltProps must be a JavaScript object where keys are property names 
+// and the values are the default values to use in the case that no values were passed in for
+//that particular property.
+import React, { Component, PropTypes } from 'react'; 
+ 
+export default class Title extends Component { 
+ 
+  render() { 
+    return ( 
+      <h1 
+        style={{ 
+          backgroundColor: this.props.highlighted ? 'yellow' : 'white', 
+          fontSize: `${this.props.fontSize}px` 
+        }} 
+      > 
+        {this.props.titleText} 
+      </h1> 
+ 
+    ); 
+  } 
+ 
+} 
+ 
+Title.propTypes = { 
+  titleText: PropTypes.string.isRequired, 
+  highlighted: PropTypes.bool, 
+  fontSize: PropTypes.number 
+}; 
+Title.defaultProps = { 
+  highlighted: false, 
+  fontSize: 18 
+}; 
+
+//In context, our Newsitem component is now simplified to this:
+import React, { Component } from 'react'; 
+import Title from './Title'; 
+ 
+export default class NewsItem extends Component { 
+ 
+  render() { 
+    return ( 
+      <div className="news-item"> 
+        <Image /> 
+        <Title 
+          titleText="Hello World!" 
+          highlighted 
+        /> 
+        <Byline /> 
+        <Description /> 
+      </div> 
+    ); 
+  } 
+ 
+} 
+
+//Sometimes, a component will receive its props from several levels above. The NewsItem
+//component can accept a property, and in turn, pass it down to the Title component.
+// For instance, maybe NewsFeed specifies the title of an individual NewsItem, rather
+//than having NewsItem provide it statically itself, as we have done in the previous
+//examples.
+import React, { Component, PropTypes } from 'react'; 
+import Title from './Title'; 
+ 
+export default class NewsItem extends Component { 
+ 
+  render() { 
+    return ( 
+      <div className="news-item"> 
+        <Image /> 
+        <Title 
+          titleText={this.props.titleText} 
+          highlighted 
+        /> 
+        <Byline /> 
+        <Description /> 
+      </div> 
+    ); 
+  } 
+ 
+} 
+ 
+NewsItem.propTypes = { 
+  titleText: PropTypes.string.isRequired 
+}; 
+
+//Props.children. Every component has an optional special property that is called children. Normal
+//properties, are passed in using something similar to the HTML attribute syntax:
+<Title 
+  titleText="Hello World" 
+/> 
+//Above code can be refactored to this:
+<Title> 
+  Hello World 
+</Title>
+
+//Now the render() method of Title component becomes this:
+render() { 
+  return ( 
+    <h1 
+      style={{ 
+        backgroundColor: this.props.highlighted ? 'yellow' : 'white', fontSize: `${this.props.fontSize}px` 
+      }} 
+    > 
+      {this.props.children} 
+    </h1> 
+  ); 
+} 
+//we could also pass in other React elements into the Title as property by also placing them in between the opening
+// and closing tags:
+<Title> 
+  Hello World! 
+  <img src="icon.png" /> 
+</Title> 
+//When validationg the children prop, we can use a special PropTypes called node, which means anything that can be
+//rendered by React:
+Title.propTypes = { 
+  children: PropTypes.node.isRequired, 
+  highlighted: PropTypes.bool, 
+  fontSize: PropTypes.number 
+}; 
+
+//Event handlers/listeners- functions that respond to user events
+document.querySelector('form').addEventListener('click', validateForm); 
+ 
+function validateForm() { 
+  alert('The form is valid!'); 
+} 
 
 
+//QuerySelector returns the first element inside the document which is the same as the name
+var el = document.querySelector(".myclass"); //returns 1 element which contains class myclass
+
+
+//In the early days of JavaScript, we probably would have used HTML event attributes in order to respond to user events on some element.
+<form onsubmit="validateForm()"> 
+  ... 
+</form> 
+
+//React handling:
+<form onSubmit={validateForm}> 
+
+//Lets imagine that we want our application to respond to a user clicking on the news item:
+import React, { Component, PropTypes } from 'react'; 
+import Title from './Title'; 
+ 
+export default class NewsItem extends Component { 
+ 
+  onClick() { 
+    alert(`You've clicked on ${this.props.titleText}`); 
+  } 
+ 
+  render() { 
+    return ( 
+      <div 
+        className="news-item" 
+        onClick={this.onClick.bind(this)} 
+      > 
+        <Image /> 
+        <Title 
+          highlighted 
+        > 
+          {this.props.titleText} 
+        </Title> 
+        <Byline /> 
+        <Description /> 
+      </div> 
+    ); 
+  } 
+ 
+} 
+ 
+NewsItem.propTypes = { 
+  titleText: PropTypes.string.isRequired 
+}; 
+
+//Take note that we are binding the render method's this context to the onClick method when adding it as a click handler:
+onClick={this.onClick.bind(this)} 
+
+// The better way to bind the this context to the event handler method is to do so within the component's constructor:
+constructor(props) { 
+  super(props); 
+  this.onClick = this.onClick.bind(this); 
+} 
+//There is no need to re-bind the event handler in the JSX, which can be simplified:
+<div 
+  className="news-item" 
+  onClick={this.onClick} 
+> 
+//To get access to the event, we just need to add it as a parameter to our event listener method:
+onClick(event) { 
+  console.log('User event', event); 
+  alert(`You've clicked on${this.props.titleText}`); 
+} 
+
+
+//State
+// Body variable will only be defined if the internal state is expanded
+// <div> element has been added around the description and byline.
+// This is because JSX elements must have a single root node in order
+// to return them or store in the variable
+render() { 
+  let body = null; 
+ 
+  if (this.state.expanded) { 
+    body = ( 
+      <div> 
+        <Byline /> 
+        <Description /> 
+      </div> 
+    ); 
+  } 
+ 
+  return ( 
+    <div 
+      className="news-item" 
+      onClick={this.onClick} 
+    > 
+      <Image /> 
+      <Title 
+        highlighted 
+      > 
+        {this.props.titleText} 
+      </Title> 
+      {body} 
+    </div> 
+  ); 
+} 
+
+//Alternative way -store each element in its own variable:
+render() { 
+  let byline = null; 
+  let description = null; 
+ 
+  if (this.state.expanded) { 
+    byline = <Byline />; 
+    description = <Description />; 
+  } 
+ 
+  return ( 
+    <div 
+      className="news-item" 
+      onClick={this.onClick} 
+    > 
+      <Image /> 
+      <Title 
+        highlighted 
+      > 
+        {this.props.titleText} 
+      </Title> 
+      {byline} 
+      {description} 
+    </div> 
+  ); 
+
+//While this code is completely valid, we can make it even better by splitting out conditional rendering into a separate method:
+renderBody() { 
+  if (this.state.expanded) { 
+    return ( 
+      <div> 
+        <Byline /> 
+        <Description /> 
+      </div> 
+    ); 
+  } 
+  return null; 
+} 
 
 
 
