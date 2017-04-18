@@ -582,6 +582,151 @@ renderBody() {
   } 
   return null; 
 } 
+//Then, we can use this helper method within our main render() method in order to make things a bit clearer
+render() { 
+  return ( 
+      <div 
+        className="news-item" 
+        onClick={this.onClick} 
+      > 
+      <Image /> 
+      <Title 
+        highlighted 
+      > 
+      {this.props.titleText} 
+      </Title> 
+        {this.renderBody()} 
+      </div> 
+    ); 
+  } 
+ 
+//The component initial state, much like its default properties, should be a JavaScript object.
+//This method describe the initial state of a component, but it does not provide us
+//with any means to update that state. In order to update the state of a component,
+//we can use a React component's setState method to assign, or reassign, any internal
+// state value.
+constructor(props) { 
+  super(props); 
+ 
+  this.state = { 
+    expanded: false 
+  }; 
+ 
+  this.onClick = this.onClick.bind(this); 
+} 
+
+//Let's modify our onClick event handler to change the expanded state of our component instead of simply alerting.
+//
+onClick(){
+	this.setState({
+		expanded: !this.state.expanded
+	});
+}
+
+//We should never manipulate the state of a component directly:
+this.state.expanded= false;
+
+
+//The same goes for props; they are external and should only be changed as a result of new values being passed in through JSX:
+this.props.titleText= 'Hello World!';
+
+//To create a component for our news item that starts out collapsed(not expanded) and not showing the description
+//or byline, but when the user clicks on the news item, it expands to show the two previously hidden elements:
+import React, { Component, PropTypes } from 'react'; 
+import Title from './Title'; 
+ 
+export default class NewsItem extends Component { 
+ 
+  constructor(props) { 
+    super(props); 
+ 
+    this.state = { 
+      expanded: false 
+    }; 
+ 
+    this.onClick = this.onClick.bind(this); 
+  } 
+ 
+  onClick() { 
+    this.setState({ 
+      expanded: !this.state.expanded 
+    }); 
+  } 
+ 
+  renderBody() { 
+    if (this.state.expanded) { 
+      return ( 
+        <div> 
+          <Byline /> 
+          <Description /> 
+        </div> 
+      ); 
+    } 
+    return null; 
+  } 
+ 
+  render() { 
+    return ( 
+      <div 
+        className="news-item" 
+        onClick={this.onClick} 
+      > 
+        <Image /> 
+        <Title 
+          highlighted 
+        > 
+          {this.props.titleText} 
+        </Title> 
+        {this.renderBody()} 
+      </div> 
+    ); 
+  } 
+ 
+} 
+ 
+NewsItem.propTypes = { 
+  titleText: PropTypes.string.isRequired 
+}; 
+
+//Before a component is mounted, which means placed into the DOM for the first time, React will look at the 
+//component's class to see if it has a method called componentWillMount defined. This method is a good place
+//to do things such as set up timers needed by the component or request data the component needs from the server:
+
+componentWillMount() { 
+  //Decrement an internal state counter every second 
+  setInterval(() => { 
+    this.setState({ 
+      secondsLeft: this.state.secondsLeft - 1; 
+    }); 
+  }, 1000); 
+} 
+
+//the next step in the component's lifecycle is the first render. React calls this method and then, the first 
+//time, converts the JSX element output to HTML elements and places them in the DOM. In other words, it mounts
+//the component.
+
+//after mounting, the next step in the lifecycle, an optional method called componentDidMount is called.
+//It is generally not a good idea to use libraries that manipulate the DOM alongside React. 
+
+componentDidMount() { 
+  //Integrate with an external library here 
+} 
+
+//The update cycle
+//The first method called during a property update cycle is componentWillReceiveProps.  Here, we not only know that the component is about to receive 
+//a new set of properties, but we also can see what those properties are and how they compare to the old ones:
+componentWillReceiveProps(nextProps) {
+	//an object of new props
+	console.log(nextProps);
+	
+	//the current(old) props
+	console.log(this.props);
+}
+
+//This brings us to the next lifecycle
+
+
+
 
 
 
