@@ -728,5 +728,27 @@ componentWillReceiveProps(nextProps) {
 
 
 
+//Then we can use this helper method within our main render() methode in order to make things a bit clearer:
+render() { 
+  return ( 
+      <div 
+        className="news-item" 
+        onClick={this.onClick} 
+      > 
+      <Image /> 
+      <Title 
+        highlighted 
+      > 
+      {this.props.titleText} 
+      </Title> 
+        {this.renderBody()}  //here we use render body
+      </div> 
+    ); 
+  } 
+  
+ //The component lifecycle
+ //Before a component is mounted, which means placed into the DOM for the first time, react wil look at that
+ //component's class to see if it has a method called componentWillMount defined.
+
 
 
