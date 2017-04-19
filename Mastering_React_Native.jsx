@@ -749,6 +749,166 @@ render() {
  //The component lifecycle
  //Before a component is mounted, which means placed into the DOM for the first time, react wil look at that
  //component's class to see if it has a method called componentWillMount defined.
+ //This method is a good place to do things such as set up timers needed by the component or request data the component needs
+ //from the server:
+ componentWillMount() { 
+  //Decrement an internal state counter every second 
+  setInterval(() => { 
+    this.setState({ 
+      secondsLeft: this.state.secondsLeft - 1; 
+    }); 
+  }, 1000); 
+} 
+//The next step in the component's lifecycle is the first render. React calls this method and then, the first time, 
+//converts the JSX element output to HTML element and places them in the DOM. In other words, it mounts the component.
+
+//The next step in the lifecycle, an optional method called componentDidMount
+componentDidMount() { 
+  //Integrate with an external library here 
+} 
+//The first thing that could happen is the component's parent could pass it new props. The second is some event or 
+//interval triggers a change in internal state. These two actions, of courrce, necessitate a re-render. Before a re-render
+//happens, there are a few other lifecycle methods that will be called.
+
+//The update cycle
+//The first method called during a property update cycle is componentWillReceiveProps. Here, we not only know that the component is 
+//about to receive a new set of properties, but we also can see what those properties are and how they compare to the old ones:
+componentWillReceiveProps(nextProps) { 
+  //an object of new props 
+  console.log(nextProps); 
+ 
+  //The current (old) props 
+  console.log(this.props); 
+} 
+
+//The next lifecycle method that is called when either props or state are updated: shouldComponentUpdate. 
+shouldComponentUpdate(nextProps, nextState) { 
+  if (this.props.uid !== nextProps.uid) { 
+    return true; 
+  } 
+  return false; 
+} 
+
+//If shouldComponentUpdate returns true (or is not defined byt the component), the next step in the
+//lifecycle is componentWillUpdate, which is the last step before re-rendering.  Here, like in shouldComponentUpdate,
+//we have access to both the new properties and the new state:
+componentWillUpdate(nextProps, nextState){
+	//Prepare for render!!
+}
+//At this point, React will call render on the component again, getting its new JSX representation.  It will 
+// compare this new JSX to the old JSX in the virtual DOM and create a change set to apply to the real DOM.
+//Once this process is complete, we arrive ath the next step of the lifecycle which is componentDidUpdate.
+//This method is very similar to componentWillUpdate, except that it receives the previous properties and state
+// as arguments:
+componentDidUpdate(prevProps, prevState) { 
+  //Here are the old props 
+  console.log(prevProps); 
+ 
+  //And here are the current (new) props 
+  console.log(this.props); 
+} 
+//Now, we've completed the update lifecycle. At this point, once again the component remanins dormant
+//until another change in properties or state occurs. This process continues over and over again
+// until the component is removed, or unmounted, from the DOM.
+
+//Unmounting the component
+//Just before a component is removed from the DOM, the final stage of the component's lifecycle
+//will be completed.
+
+componentWillMount() { 
+  //Save the interval in state 
+  this.setState({ 
+    tickInterval: setInterval(() => { 
+      this.setState({ 
+        secondsLeft: this.state.secondsLeft - 1; 
+      }); 
+    }, 1000); 
+  }); 
+} 
+ 
+componentWillUnmount() { 
+  //Stop the countdown before unmounting 
+  clearInterval(this.state.tickInterval); 
+} 
+
+//Alternate component forms
+//React.createClass, let's take a look at what our NewsItem component looks like using this method:
+React.createClass({ 
+ 
+  propTypes: { 
+    titleText: PropTypes.string.isRequired 
+  }, 
+ 
+  getInitialState() { 
+    return { 
+      expanded: false 
+    } 
+  }, 
+ 
+  onClick() { 
+    this.setState({ 
+      expanded: !this.state.expanded 
+    }); 
+  }, 
+ 
+  renderBody() { 
+    if (this.state.expanded) 
+      return ( 
+        <div> 
+          <Byline /> 
+          <Description /> 
+        </div>; 
+      ); 
+    } 
+    return null; 
+  }, 
+ 
+  render() { 
+    return ( 
+      <div 
+        className="news-item" 
+        onClick={this.onClick} 
+      > 
+        <Image /> 
+        <Title 
+          highlighted 
+        > 
+          {this.props.titleText} 
+        </Title> 
+        {this.renderBody()} 
+      </div> 
+    ); 
+  } 
+ 
+}); 
+
+// Instead of simply assigning the state in the class constructor, we define a getInitialState method in the component, 
+// which returns the initial component state as an object:
+getInitialState() { 
+  return { 
+    expanded: false 
+  } 
+} 
+
+//Previously, event handler functions were bound to the component's this context either in the constructor or within the
+//event attribute assignment. When using the React.createClass syntax, we have no longer neet to explicitly bind the context:
+<div 
+  className="news-item" 
+  onClick={this.onClick} 
+> 
+
+//Rather than defining the propTypes statically on the class, we instead do it within the component object:
+propTypes: { 
+  titleText: PropTypes.string.isRequired 
+} 
+
+
+
+
+
+
+
+
 
 
 
